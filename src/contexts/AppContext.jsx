@@ -20,6 +20,11 @@ const stateReducer = (state, action) => {
                 ...state,
                 state: false
             }
+        case 'toggled':
+            return {
+                ...state,
+                toggle: !state.toggle
+            }
         case 'set_default_cookie':
             if (action.setCookie) {
                 const setDefaultCookie = cookies['_desc_'];
@@ -27,6 +32,7 @@ const stateReducer = (state, action) => {
                 return {
                     ...state,
                     sesion: false,
+                    user: null,
                     cookie: Cookies.get()
                 }
             }
@@ -35,22 +41,29 @@ const stateReducer = (state, action) => {
 }
 const init = {
     state: true,
-    sesion: false,
-    cookie: Cookies.get()
+    sesion: true,
+    toggle: false,
+    user: null,
+    cookies: Cookies.get()
 }
 
 export default function AppContext({ children }) {
     const [state, dispatch] = useReducer(stateReducer, init);
-    
+
     async function initialise() {
         const setCookie = !state.cookies || state.cookies['_desc_'] == undefined;
-         
+
         try {
             await axios.get('/');
             dispatch({ type: 'set_default_cookie', setCookie });
         } catch (error) {
             dispatch({ type: 'set_state_false' });
         }
+    }
+
+    function toggled(e) {
+        e.preventDefault();
+        dispatch({ type: 'toggled' });
     }
 
     useEffect(() => {
@@ -62,6 +75,7 @@ export default function AppContext({ children }) {
             <appContect.Provider value={
                 {
                     context: state,
+                    toggled,
                 }
             }>
                 {children}
@@ -71,7 +85,7 @@ export default function AppContext({ children }) {
 }
 
 export const useAppContext = () => {
-    const { context } = useContext(appContect);
+    const { context, toggled } = useContext(appContect);
 
-    return { context }
+    return { context, toggled }
 }

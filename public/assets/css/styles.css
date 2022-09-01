@@ -28,9 +28,9 @@ Colors:
 - Buttons, icons - green #7dc22b
 ******************************************/
 :root {
-    --primary: #2b3988;
+    --primary: #5c6c7c;
     --secondary: #191C24;
-    --light: #6C7293;
+    --light: #c5c6c7;
     --dark: #000000;
 	--color-white: #fff;
 }

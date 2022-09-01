@@ -1,32 +1,25 @@
 import { Routes, Route } from "react-router-dom";
-import { Home, Error404, Error500, Login, Register } from './pages'
+import { Home, MusicBox, Error404, Login, Register } from './pages'
 import Dashboard from "./pages/Dashboard";
-import useInitialize from "./hooks/useInitialize";
-
+import PublicRoute from "./routes/PublicRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import AppRouter from "./routes/Router";
 function App() {
-  const { state, sesion } = useInitialize();
-
   return (
     <Routes>
-      {
-        state ? // add router guard
-          (!sesion ?
-            (
-              <>
-                <Route path="/" exact element={<Home />} />
-                <Route path="/login" exact element={<Login />} />
-                <Route path="/register" exact element={<Register />} />
-              </>
-            ) :
-            (
-              <>
-                <Route path="/" exact element={<Dashboard />} />
-              </>
-            )
-          ) :
-          (<Route path="/" element={<Error500 />} />)
-      }
-      <Route path="*" element={<Error404 />} />
+      <Route element={<AppRouter />}>
+        <Route path="/" element={<PublicRoute />}>
+          <Route index element={<Home />} />
+          <Route path="login" exact element={<Login />} />
+          <Route path="register" exact element={<Register />} />
+        </Route>
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="music" element={<MusicBox />} />
+          <Route path="*" element={<Error404 />} />
+        </Route>
+        <Route path="*" element={<Error404 />} />
+      </Route>
     </Routes>
   );
 }
