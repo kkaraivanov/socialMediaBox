@@ -15,50 +15,68 @@ const cookies = {
 };
 const stateReducer = (state, action) => {
     switch (action.type) {
-        case 'set_state_false':
+        case 'set_state':
             return {
                 ...state,
-                state: false
+                state: action.state
             }
         case 'toggled':
             return {
                 ...state,
                 toggle: !state.toggle
             }
-        case 'set_default_cookie':
-            if (action.setCookie) {
-                const setDefaultCookie = cookies['_desc_'];
-                Cookies.set(setDefaultCookie.name, setDefaultCookie.value, setDefaultCookie.options)
-                return {
-                    ...state,
-                    sesion: false,
-                    user: null,
-                    cookie: Cookies.get()
-                }
+        case 'set_accept_cookie':
+            return {
+                ...state,
+                acceptCookies: action.setCookie,
             }
         default: return state;
     }
 }
 const init = {
     state: true,
-    sesion: true,
+    sesion: false,
     toggle: false,
-    user: null,
-    cookies: Cookies.get()
+    acceptCookies: false
 }
 
 export default function AppContext({ children }) {
     const [state, dispatch] = useReducer(stateReducer, init);
 
     async function initialise() {
-        const setCookie = !state.cookies || state.cookies['_desc_'] == undefined;
-
         try {
-            await axios.get('/');
-            dispatch({ type: 'set_default_cookie', setCookie });
+            const res = await axios.get('/');
+            dispatch({ type: 'set_state', state: res.data.allowSesion });
+            setAcceptCookie()
         } catch (error) {
-            dispatch({ type: 'set_state_false' });
+            dispatch({ type: 'set_state', state: false });
         }
+    }
+
+    function checkAcceptCookie() {
+        const acceptCookiesExist = Cookies.get('accept-cookies');
+
+        return acceptCookiesExist == 1;
+    }
+
+    function setAcceptCookie(e, value = 1) {
+        if (e) {
+            e.preventDefault();
+
+            if (value == 0) {
+                dispatch({ type: 'set_accept_cookie', setCookie: true });
+                return
+            }
+
+            Cookies.set('accept-cookies', value, {
+                domain: 'localhost',
+                secure: true,
+                sameSite: 'None',
+                expires: 0.1 // TODO: set expire 365 day in production
+            });
+        }
+
+        dispatch({ type: 'set_accept_cookie', setCookie: checkAcceptCookie() });
     }
 
     function toggled(e) {
@@ -74,6 +92,7 @@ export default function AppContext({ children }) {
         <>
             <appContect.Provider value={
                 {
+                    setAcceptCookie,
                     context: state,
                     toggled,
                 }
@@ -82,6 +101,12 @@ export default function AppContext({ children }) {
             </appContect.Provider>
         </>
     )
+}
+
+export const useAcceptCookie = () => {
+    const { setAcceptCookie } = useContext(appContect);
+
+    return { setAcceptCookie: setAcceptCookie }
 }
 
 export const useAppContext = () => {
