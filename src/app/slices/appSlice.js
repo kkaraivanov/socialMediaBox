@@ -4,7 +4,7 @@ import { appService } from '../../api/axios'
 
 const INITIAL_STATE = {
     status: false,
-    acceptCookieExist: false,
+    acceptCookieExist: true,
     isLoading: false,
     toggle: false,
 }

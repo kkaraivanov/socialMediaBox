@@ -1,0 +1,1 @@
+export {default as AcceptCookie } from './acceptCookie/AcceptCookie'
