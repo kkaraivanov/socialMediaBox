@@ -1,0 +1,36 @@
+.cookie-container {
+    background: rgba(0, 0, 0, 0.9);
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.cookie-container h4,
+.cookie-container p,
+.cookie-container a {
+    color: white;
+}
+
+.cookie-container h4 {
+    font-size: 18px;
+}
+
+.cookie-container p {
+    font-size: 12px;
+}
+
+.cookie-container .close-btn{
+    position: absolute;
+    text-align: center;
+    width: 35px;
+    height: 35px;
+    top: 0;
+    right: 0;
+}
+
+.cookie-container .policy {
+    color: red;
+}

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { setAcceptCookie } from '../../app/slices/appSlice'
+import { setAcceptCookie } from '../../app/slices/appSlice';
+import './style.css';
 
 const ExportComponent = () => {
     const { acceptCookieExist } = useSelector((state) => state.app);
