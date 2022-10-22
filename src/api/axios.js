@@ -30,7 +30,7 @@ export const appService = {
     getStatus: async () => {
         const { allowSesion, acceptCookie, jwt } = await get();
 
-        return { acceptCookie, appState: allowSesion, jwt };
+        return { acceptCookie, status: allowSesion, jwt };
     },
     setAcceptCookie: async (value) => {
         const { acceptCookie } = await post('/', { value });

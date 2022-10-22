@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { storage } from '../storageService'
+import { storage } from '../../utill'
 import { appService } from '../../api/axios'
 
 const INITIAL_STATE = {
-    appState: false,
+    status: false,
     acceptCookieExist: false,
     isLoading: false,
     toggle: false,
@@ -14,10 +14,10 @@ const slice = {
     initialState: INITIAL_STATE,
     reducers: {
         setOffline: (state) => {
-            state.appState = false;
+            state.status = false;
         },
         setOnline: (state) => {
-            state.appState = true;
+            state.status = true;
         },
         toggled: (state) => {
             state.toggle = !state.toggle
@@ -29,21 +29,21 @@ const slice = {
                 state.isLoading = true
             })
             .addCase(load.fulfilled, (state, action) => {
-                const { acceptCookie, appState } = action.payload;
+                const { acceptCookie, status } = action.payload;
                 state.isLoading = false
-                state.appState = appState
+                state.status = status
                 state.acceptCookieExist = acceptCookie
             })
             .addCase(load.rejected, (state, action) => {
                 state.isLoading = false
-                state.appState = action.payload
+                state.status = action.payload
                 state.manager = null
             })
             .addCase(setAcceptCookie.fulfilled, (state, action) => {
                 state.acceptCookieExist = action.payload
             })
             .addCase(setAcceptCookie.rejected, (state, action) => {
-                state.appState = action.payload
+                state.status = action.payload
             })
     }
 }

@@ -1,13 +1,11 @@
-import { Routes, Route } from "react-router-dom";
+import React from "react";
+import RouteRender from "./routes/RouteRender";
 
 function App() {
   return (
-    <h1>Hello world</h1>
-    // <Routes>
-    //   <Route>
-        
-    //   </Route>
-    // </Routes>
+    <React.Fragment>
+      <RouteRender />
+    </React.Fragment>
   );
 }
 

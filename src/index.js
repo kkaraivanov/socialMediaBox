@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { load } from './app/slices/appSlice'
@@ -11,10 +11,12 @@ store.dispatch(load());
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Router>
-        <App />
-      </Router>
-    </Provider>
+    <Router>
+      <Provider store={store}>
+        <Routes>
+          <Route path="/*" element={<App />} />
+        </Routes>
+      </Provider>
+    </Router>
   </React.StrictMode>
 );
