@@ -1,34 +1,57 @@
-import { Contact, Dashboard, Home, Test } from '../pages';
+import {
+    Abault,
+    Contact,
+    Dashboard,
+    Home,
+    Login,
+    NotFound,
+    Register,
+    Service,
+    Test
+} from '../pages';
 import { routes } from './routes';
 
 const commonRoutes = [
     {
-        path: routes.TEST,
-        element: <Test />,
+        path: routes.NOT_FOUND,
+        element: <NotFound />,
     },
 ]
 
-const publicRoutes = [
+const routesArray = [
     {
-        path: routes.DEFAULT,
+        ...routes.HOME,
         element: <Home />,
     },
     {
-        path: routes.CONTACT,
+        ...routes.ABAULT,
+        element: <Abault />,
+    },
+    {
+        ...routes.CONTACT,
         element: <Contact />,
     },
-    ...commonRoutes
-];
-
-const privateRoutes = [
     {
-        path: routes.DEFAULT,
+        ...routes.SERVICE,
+        element: <Service />,
+    },
+    {
+        ...routes.REGISTER,
+        element: <Register />,
+    },
+    {
+        ...routes.LOGIN,
+        element: <Login />,
+    },
+    {
+        ...routes.DASHBOARD,
         element: <Dashboard />,
     },
     ...commonRoutes
 ];
 
+const getRoutes = (props = 'public') => routesArray.filter(el => el.layout == props || el.layout == undefined);
+
 export const config = {
-    publicRoutes,
-    privateRoutes
+    routes: getRoutes
 }

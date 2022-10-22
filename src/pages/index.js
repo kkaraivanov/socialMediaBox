@@ -7,5 +7,7 @@ export {default as Login } from './public/Login';
 
 export {default as Dashboard } from './private/Dashboard';
 
+export {default as NotFound } from './errors/404';
+export {default as ServerOfline } from './errors/500';
 
 export {default as Test } from './Test';

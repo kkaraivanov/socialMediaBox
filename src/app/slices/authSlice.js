@@ -4,7 +4,7 @@ import { storage } from '../../utill'
 let user = JSON.parse(storage.getUser());
 const INITIAL_STATE = {
     user: user ? user : null,
-    isLogedIn: true, //user ? true : false,
+    isLogedIn: false, //user ? true : false,
     isLoading: false,
     isSuccess: false,
     isError: false,
