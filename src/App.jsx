@@ -3,9 +3,7 @@ import RouteRender from "./routes/RouteRender";
 
 function App() {
   return (
-    <React.Fragment>
-      <RouteRender />
-    </React.Fragment>
+    <RouteRender />
   );
 }
 

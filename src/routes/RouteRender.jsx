@@ -1,14 +1,18 @@
 import React from "react";
-import { Link, Navigate, useRoutes } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { Navigate, useRoutes } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 import { config } from "./config";
 import { useEffect } from "react";
-import { AcceptCookie } from "../components";
+import { AcceptCookie, Spinner } from "../components";
 import { routes } from "./routes";
 import { ServerOfline } from '../pages'
+import { setOffline, load } from '../app/slices/appSlice'
+
+import io from "socket.io-client";
+import { BASE_SERVER_URL } from "../utill";
 
 const getMenuRoutes = (props = 'public') => Object.entries(routes)
-    .filter(el => el[1].layout == props)
+    .filter(el => el[1].layout === props)
     .map(x => {
         return { name: x[1].name, path: x[1].path }
     })
@@ -36,15 +40,39 @@ const PrivateLayout = () => {
     return <RouteValidator route={privateRoutes} />
 };
 
-const Layout = () => {
+const socket = io(BASE_SERVER_URL, {
+    autoConnect: false
+});
+const Layout = ({ children }) => {
     const { isLogedIn } = useSelector((state) => state.auth);
+    const { status, isLoading } = useSelector((state) => state.app);
+    const dispatch = useDispatch();
+
+    const ws = () => {
+        socket.on('connect', function () {
+            if (!status) dispatch(load());
+        });
+        socket.on('disconnect', function () {
+            dispatch(setOffline());
+        });
+    }
+
     useEffect(() => {
+        socket.connect();
+        setTimeout(() => {
+            ws();
+        }, 2000);
+        
+        return () => {
+            socket.close();
+        }
+    }, [socket, dispatch])
 
-    }, [isLogedIn])
+    if (isLoading) return <Spinner />
 
-    return !isLogedIn
-        ? <PublicLayout />
-        : <PrivateLayout />
+    if (!status) return <ServerOfline />
+
+    return children(isLogedIn)
 }
 
 const RouteValidator = ({ route }) => {
@@ -56,17 +84,16 @@ const RouteValidator = ({ route }) => {
 }
 
 const RouteRender = () => {
-    const { status, isLoading } = useSelector((state) => state.app);
-
-    useEffect(() => {
-
-    }, [status, isLoading])
-
-    if (!status) return <ServerOfline />
-
     return (
         <React.Fragment>
-            <Layout />
+            <Layout>
+                {
+                    (isLogedIn) => {
+                        if (isLogedIn) return <PrivateLayout />;
+                        return <PublicLayout />
+                    }
+                }
+            </Layout>
             <AcceptCookie />
         </React.Fragment>
     )
